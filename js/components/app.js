@@ -67,7 +67,7 @@ const App = {
 
       <div>
         <b-row>
-          <b-col cols="4" offset="4">
+          <b-col>
             <div class="lectura py-3 text-center">&nbsp;{{ lectura }}&nbsp;</div>
 
             <div class="text-center mt-3">
