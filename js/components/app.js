@@ -68,7 +68,10 @@ const App = {
       <div>
         <b-row>
           <b-col>
-            <div class="lectura py-3 text-center">&nbsp;{{ lectura }}&nbsp;</div>
+            <div class="lectura py-3 text-center">
+              {{ lectura }}
+              <div class="mark-box"><div class="mark"></div></div>
+            </div>
 
             <div class="text-center mt-3">
               <b-form-input v-model="velocidad" type="range" min="1" max="10"></b-form-input>
