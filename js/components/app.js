@@ -3,10 +3,14 @@ const App = {
   data() {
     return {
       texto: `Cuéntame, Musa, la historia del hombre de muchos senderos, que anduvo errante muy mucho después de Troya sagrada asolar; vio muchas ciudades de hombres y conoció su talante, y dolores sufrió sin cuento en el mar tratando de asegurar la vida y el retorno de sus compañeros. Mas no consiguió salvarlos, con mucho quererlo, pues de su propia insensatez sucumbieron víctimas, ¡locas! de Hiperión Helios las vacas comieron, y en tal punto acabó para ellos el día del retorno. Diosa, hija de Zeus, también a nosotros, cuéntanos algún pasaje de estos sucesos. `,
-      velocidad: 5,
+      velocidad: 120, // palabras por minuto
+      velocidadMin: 10,
+      velocidadMax: 1000,
       intervalo: null,
       pos: 0,
       status: 'stop',
+
+      context: new (window.AudioContext || window.webkitAudioContext)(),
     };
   },
 
@@ -27,9 +31,27 @@ const App = {
   },
 
   mounted() {
+    this.playTune(432, 'sine');
   },
 
   methods: {
+    // oscType: 'sine'|'square'|'triangle'|'sawtooth'
+    playTune(frequency, oscType) {
+      const context = this.context;
+      var osc = context.createOscillator();
+
+      var gain = context.createGain();
+      osc.type = oscType || 'sine';
+      osc.connect(gain);
+      gain.connect(context.destination)
+
+      // osc.frequency.value = frequency; // Hz DEPRECATED
+      osc.frequency.setValueAtTime(frequency, context.currentTime);
+      osc.start();
+      gain.gain.exponentialRampToValueAtTime(0.00001, context.currentTime + 1);
+      //osc.stop(context.currentTime + 250);
+    },
+
     setIntervalo() {
       const that = this;
       clearInterval(this.intervalo);
@@ -38,7 +60,7 @@ const App = {
         if (that.pos > that.palabras.length) {
           that.pos = 0;
         }
-      }, 1000 / this.velocidad);
+      }, 1000 / (this.velocidad / 60) );
     },
     
     start() {
@@ -74,8 +96,10 @@ const App = {
             </div>
 
             <div class="text-center mt-3">
-              <b-form-input v-model="velocidad" type="range" min="1" max="10"></b-form-input>
-              <em>{{ velocidad }} palabras por segundo</em>
+              <b-input-group :prepend="velocidadMin" :append="velocidadMax" class="mt-3">
+                <b-form-input v-model="velocidad" type="range" :min="velocidadMin" :max="velocidadMax"></b-form-input>
+              </b-input-group>
+              <em>{{ velocidad }} palabras por minuto</em>
             </div>
 
             <div class="text-center mt-3">
