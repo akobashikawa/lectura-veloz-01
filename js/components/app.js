@@ -3,7 +3,7 @@ const App = {
   data() {
     return {
       texto: `Cuéntame, Musa, la historia del hombre de muchos senderos, que anduvo errante muy mucho después de Troya sagrada asolar; vio muchas ciudades de hombres y conoció su talante, y dolores sufrió sin cuento en el mar tratando de asegurar la vida y el retorno de sus compañeros. Mas no consiguió salvarlos, con mucho quererlo, pues de su propia insensatez sucumbieron víctimas, ¡locas! de Hiperión Helios las vacas comieron, y en tal punto acabó para ellos el día del retorno. Diosa, hija de Zeus, también a nosotros, cuéntanos algún pasaje de estos sucesos. `,
-      velocidad: 120, // palabras por minuto
+      velocidad: 200, // palabras por minuto
       velocidadMin: 10,
       velocidadMax: 1000,
       intervalo: null,
@@ -21,6 +21,18 @@ const App = {
 
     lectura() {
       return this.palabras[this.pos];
+    },
+
+    lecturaLeft() {
+      const lectura = this.lectura;
+      const pos = Math.floor(lectura.length / 3);
+      return lectura.substr(0, pos);
+    },
+
+    lecturaRight() {
+      const lectura = this.lectura;
+      const pos = Math.floor(lectura.length / 3);
+      return lectura.substr(pos);
     },
   },
 
@@ -57,7 +69,7 @@ const App = {
       clearInterval(this.intervalo);
       this.intervalo = setInterval(function () {
         that.pos++;
-        if (that.pos > that.palabras.length) {
+        if ((that.pos + 1) == that.palabras.length) {
           that.pos = 0;
         }
       }, 1000 / (this.velocidad / 60) );
@@ -90,9 +102,9 @@ const App = {
       <div>
         <b-row>
           <b-col>
-            <div class="lectura py-3 text-center">
-              {{ lectura }}
-              <div class="mark-box"><div class="mark"></div></div>
+            <div class="lectura">
+              <div class="box-left">{{ lecturaLeft }}</div>
+              <div class="box-right">{{ lecturaRight }}</div>
             </div>
 
             <div class="text-center mt-3">
